@@ -14,12 +14,13 @@ class GRBLSerial(Serial):
     def __init__(self, *args, **kwargs):
         port_list = self.list_serial_ports()
         print(port_list)
-        my_port = self.detect_relevant_port(port_list)
-        my_baud = self.detect_baud_rate(my_port)
+        my_baud, my_port = self.detect_relevant_port(port_list)
         if not 'port' in kwargs:
             kwargs['port'] = my_port
         if not 'baudrate' in kwargs:
             kwargs['baudrate'] = my_baud
+        if not 'timeout' in kwargs:
+            kwargs['timeout'] = my_baud
         super(ExtendedSerial, self).__init__(*args, **kwargs)
 
     # Serial code from http://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
@@ -54,12 +55,19 @@ class GRBLSerial(Serial):
                 pass
         return result
 
-    def detect_relevant_port(list_of_ports):
+    def detect_port_and_baud(list_of_ports):
     '''Connect to all serial ports and look for GRBL string'''
-      return '/dev/cu.usbmodem441'
+        grbls = []
+        for baud in [115200, 9600]:
+            for port in list_of_ports:
+                s = serial.Serial(port, baud, timeout=1)
+                data = s.read(9999)
+                if data.find('GRBL') != -1:
+                    grbls.append((baud, port))
+                s.close()
+        print(grbls)
+        return 115200, '/dev/cu.usbmodem441'
 
-    def detect_baud_rate(serial_port):
-      return 115200
 
 
 class SerialController(threading.Thread):
