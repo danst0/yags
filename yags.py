@@ -10,8 +10,16 @@ import serial
 SISPMCTL = "/usr/local/bin/sispmctl"
 UGS = "/Users/danieldumke/cnc/ugs/start.sh"
 
-class ExtendedSerial(Serial):
+class GRBLSerial(Serial):
     def __init__(self, *args, **kwargs):
+        port_list = self.list_serial_ports()
+        print(port_list)
+        my_port = self.detect_relevant_port(port_list)
+        my_baud = self.detect_baud_rate(my_port)
+        if not 'port' in kwargs:
+            kwargs['port'] = my_port
+        if not 'baudrate' in kwargs:
+            kwargs['baudrate'] = my_baud
         super(ExtendedSerial, self).__init__(*args, **kwargs)
 
     # Serial code from http://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
@@ -47,10 +55,11 @@ class ExtendedSerial(Serial):
         return result
 
     def detect_relevant_port(list_of_ports):
-      return '/dev/xxx'
+    '''Connect to all serial ports and look for GRBL string'''
+      return '/dev/cu.usbmodem441'
 
     def detect_baud_rate(serial_port):
-      return 19200
+      return 115200
 
 
 class SerialController(threading.Thread):
@@ -60,7 +69,8 @@ class SerialController(threading.Thread):
         self.to_grbl_queue = to_grbl_queue
         self.from_grbl_queue = from_grbl_queue
         threading.Thread.__init__(self)
-        self.ser = serial.Serial('/dev/cu.usbmodem441', 115200, timeout=2)
+        self.ser = serial.GRBLSerial()
+        
         #ser.bytesize = serial.EIGHTBITS #number of bits per bytes
         #ser.parity = serial.PARITY_NONE #set parity check: no parity
         #ser.stopbits = serial.STOPBITS_ONE #number of stop bits
