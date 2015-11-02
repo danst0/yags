@@ -10,6 +10,49 @@ import serial
 SISPMCTL = "/usr/local/bin/sispmctl"
 UGS = "/Users/danieldumke/cnc/ugs/start.sh"
 
+class ExtendedSerial(Serial):
+    def __init__(self, *args, **kwargs):
+        super(ExtendedSerial, self).__init__(*args, **kwargs)
+
+    # Serial code from http://stackoverflow.com/questions/12090503/listing-available-com-ports-with-python
+    def list_serial_ports():
+        """Lists serial ports
+
+        :raises EnvironmentError:
+            On unsupported or unknown platforms
+        :returns:
+            A list of available serial ports
+        """
+        if sys.platform.startswith('win'):
+            ports = ['COM' + str(i + 1) for i in range(256)]
+
+        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+            # this is to exclude your current terminal "/dev/tty"
+            ports = glob.glob('/dev/tty[A-Za-z]*')
+
+        elif sys.platform.startswith('darwin'):
+            ports = glob.glob('/dev/tty.*')
+
+        else:
+            raise EnvironmentError('Unsupported platform')
+
+        result = []
+        for port in ports:
+            try:
+                s = serial.Serial(port)
+                s.close()
+                result.append(port)
+            except (OSError, serial.SerialException):
+                pass
+        return result
+
+    def detect_relevant_port(list_of_ports):
+      return '/dev/xxx'
+
+    def detect_baud_rate(serial_port):
+      return 19200
+
+
 class SerialController(threading.Thread):
 
     def __init__(self, command_queue, to_grbl_queue, from_grbl_queue):
