@@ -9,6 +9,7 @@ import serial
 
 SISPMCTL = "/usr/local/bin/sispmctl"
 
+
 class PMSController(threading.Thread):
     def __init__(self, queue):
         self.__queue = queue
