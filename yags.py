@@ -21,6 +21,11 @@ class PMSController(threading.Thread):
             if item is None:
                 print('Stopping PMS Controller')
                 break # reached end of queue
+            elif item is "update":
+                print('Updating Variables')
+                process = Popen([SISPMCTL, "-g", "all"], stdout=PIPE)
+                (output, err) = process.communicate()
+                print(output)
 
             # pretend we're doing something that takes 10-100 ms
             #time.sleep(random.randint(10, 100) / 1000.0)
