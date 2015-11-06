@@ -99,6 +99,7 @@ class PMSController(threading.Thread):
                 else:
                     (output, err) = process.communicate()
                     exit_code = process.wait()
+                    output = output.decode("utf-8") 
                 print(output)
                 outlet_no = 0
                 for line in output.split('\n'):
