@@ -2,7 +2,7 @@
 <head>
   <title>Bastelzimmer Power Management</title>
   %if redirect:
-    <meta http-equiv="refresh" content="12; URL=http://localhost:8081/">
+    <meta http-equiv="refresh" content="12; URL=/">
   %end
 </head>
 <body>
