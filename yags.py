@@ -61,7 +61,7 @@ class WebFrontend(threading.Thread):
         return bottle.template('switch', ident=ident, on_off=on_off, redirect=False)
     def run(self):
         while not self.exiting:
-            self.server = bottle.run(host='localhost', port=8081)
+            self.server = bottle.run(host='0.0.0.0', port=8081)
             print(self.server)
         print('Last words from WebFrontend')            
     def stop(self):
