@@ -85,7 +85,7 @@ class PMSController(threading.Thread):
                 item = None
             #print('Current item in queue', item)
             if item is 'update':
-                print('Updating current status')
+                #print('Updating current status')
                 try:
                     process = Popen([SISPMCTL, "-g", "all"], stdout=PIPE)
                 except FileNotFoundError:
