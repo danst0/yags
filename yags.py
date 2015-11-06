@@ -100,27 +100,27 @@ class PMSController(threading.Thread):
                     (output, err) = process.communicate()
                     exit_code = process.wait()
                     output = output.decode("utf-8") 
-                print(output)
+                #print(output)
                 outlet_no = 0
                 for line in output.split('\n'):
                     if line.find('Status') != -1:
-                        print(line)
+                        #print(line)
                         if line.find('off') != -1:
                             self.current_status[outlet_no] = False
                         else:
                             self.current_status[outlet_no] = True
-                        print(line, self.current_status[outlet_no])
+                        #print(line, self.current_status[outlet_no])
                         outlet_no += 1
                 for name, ident in OUTLET_ASSIGNMENT.items():
-                    print(self.current_status)
-                    print(name, ident)
+                    #print(self.current_status)
+                    #print(name, ident)
                     
                     if self.current_status[ident-1]:
                         self.radio_variable[name].set(1)
                     else:
                         self.radio_variable[name].set(2)
                     
-                    print('RADIO_VARIABLE[name]', name, self.radio_variable[name].get())
+                    #print('RADIO_VARIABLE[name]', name, self.radio_variable[name].get())
                 pms_queue.task_done()                    
             elif item != None:
                 print("Executing SISPMCTL with parameters:", item)
